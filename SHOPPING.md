@@ -16,7 +16,7 @@ now a manifest, not a shopping list.
 | Motors | 4× 520 geared **encoder** motors (1:56) | closed-loop speed |
 | Expansion board | motor control + power mgmt + **onboard IMU**; USB/serial to RDK X5 | replaces all DIY motor/power wiring |
 | Battery | 12.6 V 6000 mAh (~3 h) + charger | integrated, regulated power |
-| **Camera** | USB HD + 2-DOF pan/tilt (RGB) *— confirm if you got the RGBD Nuwa-HP60C depth cam instead* | YOLO input |
+| **Camera** | USB HD + 2-DOF pan/tilt (**RGB — confirmed**) | YOLO input |
 | Voice | mic array + speaker + AI-LLM voice module (Dify) | Stage 3 **2nd workload** |
 | Extras | 0.91" OLED, cooling fan, wireless gamepad, USB hub, microSD, cables, tools | teleop/e-stop, thermal, dev |
 
@@ -24,10 +24,9 @@ now a manifest, not a shopping list.
 ~~2WD chassis, TT motors, TB6612FNG driver, 2S LiPo, 5 V buck, switch, wiring, tilt mount~~ — **all replaced by the M1 kit.**
 
 ## Still to verify / small items
-- [ ] **Which camera** arrived (RGB USB-HD+2DOF vs RGBD depth) — depth gives *true* follow distance; RGB uses bbox size.
+- [x] **Camera confirmed: RGB USB-HD + 2-DOF** → follow-distance from **bbox size** (depth path not needed).
 - [ ] Yahboom's **RDK X5 ROS 2 image / Rosmaster software** package (so motor + camera drivers are ready).
 - [ ] (Optional) a 2nd microSD to keep your Stage 1 RDKOS separate from Yahboom's robot image.
-- [ ] Camera connects over **USB** (not MIPI) — plan updated for that.
 
 ## RAM note (4GB)
 Core task fits 4GB because YOLO runs on the **BPU**. Keep it lean: run the robot **headless**,
