@@ -23,7 +23,7 @@ Goal: power on the board and run an on-device AI inference task. **Doable with t
 - [x] **Challenge 1 — Board bring-up:** flash OS → USB-gadget network → SSH (`uname -a`: `6.1.83 aarch64`)
 - [x] **Challenge 2 — Sensor:** DDR/CPU thermal sensors + onboard ACT LED blink (`scripts/challenge2_sensor.py`)
 - [x] **Challenge 3 — First AI task:** YOLO11n detect on the BPU — forward 13.1 ms (~76 FPS), bus 0.93 + 4× person
-- [ ] Screenshots: **A** ✓ (SSH) · **B** pending (film the ACT LED) · **C** ✓ (detection log + annotated image)
+- [x] Screenshots: **A** (SSH) · **B** (LED clip) · **C** (detection log + annotated image) — all in [`docs/images/`](docs/images/)
 - [ ] Discord Stage 1 check-in → permalink below
 - [ ] Showcase PR opened to the official `projects/` folder
 
@@ -37,6 +37,7 @@ Goal: power on the board and run an on-device AI inference task. **Doable with t
 - **Card:** SanDisk Ultra 64GB (A1/U1/V10), read via an Anker 7-in-1 USB-C hub → MacBook.
 
 > 📸 **Screenshot A:** flashing tool (post-flash) + active SSH terminal.
+> **Evidence:** [`docs/images/screenshot-A-ssh.png`](docs/images/screenshot-A-ssh.png) — SSH session over the USB-C gadget (`ssh sunrise@192.168.128.10`, Ubuntu 22.04.5 / kernel 6.1.83 aarch64 banner).
 
 ## 2. Power, network & SSH setup
 
@@ -115,6 +116,8 @@ bash run.sh detect
 > 📸 **Screenshot C:** the annotated detection output, running on the board.
 
 ![YOLO11n detection on the X5 BPU — bus 0.93, 4× person](docs/images/yolo11n-bus-result.jpg)
+
+Terminal log of the run: [`docs/images/screenshot-C-detect-log.png`](docs/images/screenshot-C-detect-log.png) (timings + per-detection output).
 
 ## Dependencies
 - `git`; D-Robotics **BPU runtime** + `Hobot.GPIO` (both preinstalled on RDKOS).
