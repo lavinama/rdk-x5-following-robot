@@ -24,7 +24,7 @@ Goal: power on the board and run an on-device AI inference task. **Doable with t
 - [x] **Challenge 2 — Sensor:** DDR/CPU thermal sensors + onboard ACT LED blink (`scripts/challenge2_sensor.py`)
 - [x] **Challenge 3 — First AI task:** YOLO11n detect on the BPU — forward 13.1 ms (~76 FPS), bus 0.93 + 4× person
 - [x] Screenshots: **A** (SSH) · **B** (LED clip) · **C** (detection log + annotated image) — all in [`docs/images/`](docs/images/)
-- [ ] Discord Stage 1 check-in → permalink below
+- [x] Discord Stage 1 check-in → [permalink](https://discord.com/channels/1300358874280230994/1511058147350151168/1514414310296649849)
 - [ ] Showcase PR opened to the official `projects/` folder
 
 ---
@@ -125,7 +125,7 @@ Terminal log of the run: [`docs/images/screenshot-C-detect-log.png`](docs/images
 - Model `.bin` from `rdk_model_zoo` (`model/download_model.sh`).
 
 ## Community check-in
-- Discord intro / Stage 1 post: `<permalink>`
+- Discord Stage 1 check-in: https://discord.com/channels/1300358874280230994/1511058147350151168/1514414310296649849
 
 ---
 

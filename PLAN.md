@@ -15,9 +15,9 @@ Detailed docs: Stage 1 working doc on branch `docs/stage1-scaffold`; Stage 2/3 d
 4. ✅ Network + SSH from Mac (`ssh sunrise@192.168.128.10`, `uname -a` ✓; Wi-Fi `192.168.1.215`) → **Screenshot A**
 5. ✅ Sensor (Challenge 2): no parts on hand → onboard ACT LED blink + DDR/CPU thermal-sensor log (`scripts/challenge2_sensor.py`) → **Screenshot B**
 6. ✅ First AI (Challenge 3): YOLO11n on `bus.jpg` — BPU forward **13.1 ms (~76 FPS)**, bus 0.93 + 4 persons → **Screenshot C** (`~/Desktop/screenshot-C-yolo-result.jpg`)
-7. ⬜ Discord Stage 1 check-in → save permalink
-8. ⬜ Fill the evidence into the Stage 1 doc; make the repo **public**
-9. ⬜ Merge `docs/stage1-scaffold` → `main`; open the competition `projects/` PR (fork as lavinama)
+7. ✅ Discord Stage 1 check-in → [permalink](https://discord.com/channels/1300358874280230994/1511058147350151168/1514414310296649849)
+8. ✅ Fill the evidence into the Stage 1 doc; make the repo **public**
+9. 🔜 Open the competition `projects/` PR (fork as lavinama, branch `showcase/lavinama-stage1`)
 
 → earns **RDK Explorer**
 
