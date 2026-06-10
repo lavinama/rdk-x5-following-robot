@@ -11,10 +11,10 @@ Detailed docs: Stage 1 working doc on branch `docs/stage1-scaffold`; Stage 2/3 d
 ## Stage 1 — Ignite · closes **Jun 10** · *board only (M1 kit not needed)*
 1. ✅ Register — Discord + Google Form + RDK Studio account
 2. ✅ Download + MD5-verify RDKOS 3.5.0 Desktop image
-3. 🔜 Flash microSD (RDK Studio) → first boot
-4. ⬜ Network + SSH from Mac (`ssh sunrise@<ip>`, `uname -a`) → **Screenshot A**
-5. ⬜ Sensor (Challenge 2): GPIO LED blink via `Hobot.GPIO` → **Screenshot B**
-6. ⬜ First AI (Challenge 3): YOLO on a static image (rdk_model_zoo, on the BPU) → **Screenshot C**
+3. ✅ Flash microSD (RDK Studio) → first boot
+4. ✅ Network + SSH from Mac (`ssh sunrise@192.168.128.10`, `uname -a` ✓; Wi-Fi `192.168.1.215`) → **Screenshot A**
+5. ✅ Sensor (Challenge 2): no parts on hand → onboard ACT LED blink + DDR/CPU thermal-sensor log (`scripts/challenge2_sensor.py`) → **Screenshot B**
+6. ✅ First AI (Challenge 3): YOLO11n on `bus.jpg` — BPU forward **13.1 ms (~76 FPS)**, bus 0.93 + 4 persons → **Screenshot C** (`~/Desktop/screenshot-C-yolo-result.jpg`)
 7. ⬜ Discord Stage 1 check-in → save permalink
 8. ⬜ Fill the evidence into the Stage 1 doc; make the repo **public**
 9. ⬜ Merge `docs/stage1-scaffold` → `main`; open the competition `projects/` PR (fork as lavinama)

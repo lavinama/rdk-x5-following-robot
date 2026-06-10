@@ -20,10 +20,11 @@ This documents my Stage 1 ("Ignite") work and grows through Stages 2–3.
 Goal: power on the board and run an on-device AI inference task. **Doable with the board alone.**
 
 ### Deliverables checklist
-- [ ] **Challenge 1 — Board bring-up:** flash OS → network → SSH → Discord check-in
-- [ ] **Challenge 2 — Sensor:** GPIO — blink an LED via `Hobot.GPIO`
-- [ ] **Challenge 3 — First AI task:** on-device YOLO detection on a static image (BPU)
-- [ ] Screenshots A, B, C captured
+- [x] **Challenge 1 — Board bring-up:** flash OS → USB-gadget network → SSH (`uname -a`: `6.1.83 aarch64`)
+- [x] **Challenge 2 — Sensor:** DDR/CPU thermal sensors + onboard ACT LED blink (`scripts/challenge2_sensor.py`)
+- [x] **Challenge 3 — First AI task:** YOLO11n detect on the BPU — forward 13.1 ms (~76 FPS), bus 0.93 + 4× person
+- [ ] Screenshots: **A** ✓ (SSH) · **B** pending (film the ACT LED) · **C** ✓ (detection log + annotated image)
+- [ ] Discord Stage 1 check-in → permalink below
 - [ ] Showcase PR opened to the official `projects/` folder
 
 ---
@@ -37,63 +38,83 @@ Goal: power on the board and run an on-device AI inference task. **Doable with t
 
 > 📸 **Screenshot A:** flashing tool (post-flash) + active SSH terminal.
 
-## 2. Network & SSH setup
+## 2. Power, network & SSH setup
 
-- **Network:** Wi-Fi (`nmtui`) or Ethernet. Verify internet: `ping -c3 8.8.8.8`.
+- **Power:** wall USB-C supply — official spec is **5V/5A** (a 27W+ PD charger works). D-Robotics warns
+  *against* powering from a computer's USB port (brown-outs / reboot loops).
+- **Two Type-C ports** (bring-up gotcha): the X5 has separate Type-C ports for **power** and for
+  **QuickLink / USB-device** (ADB + gadget ethernet `192.168.128.10`) — one cable can't do both jobs.
+- **LEDs:** green = power; orange blinking = system running normally (RDK OS ≥ 3.1).
 - **Default login:** `sunrise` / `sunrise` (also `root` / `root`).
-- **Board IP:** run `ip addr` on the desktop, or use defaults — Ethernet `192.168.127.10`, USB-C gadget `192.168.128.10`.
-- **SSH from Mac:** `ssh sunrise@<board-ip>` → verify with `uname -a`.
+- **USB-C gadget from macOS (what worked):** plug the Mac into the **QuickLink** Type-C → a CDC network
+  interface appears, but the board serves no DHCP. Give the Mac side a static IP, then SSH:
+  ```bash
+  sudo ifconfig <enX> inet 192.168.128.5 netmask 255.255.255.0   # enX = the new interface
+  ssh sunrise@192.168.128.10                                      # → uname -a
+  ```
+  Verified: `Linux ubuntu 6.1.83 aarch64`, Ubuntu 22.04.5 LTS (RDKOS 3.5.0).
+- **Wi-Fi without a monitor:** over the USB SSH session,
+  `sudo nmcli device wifi connect '<SSID>' password '<pw>'` — board then reachable on its Wi-Fi IP too.
+- **Other defaults:** wired Ethernet is static `192.168.127.10`.
+- **Gotcha — first-boot clock:** no RTC battery, so the clock starts in 2000 and **HTTPS/TLS fails**
+  (certs "not yet valid") until NTP syncs, a minute or two after the network comes up. `ping 8.8.8.8`
+  working while `curl https://…` fails silently is the tell; check `timedatectl`.
 
-## 3. Sensor (Challenge 2) — GPIO LED blink
+## 3. Sensor (Challenge 2) — onboard thermal sensors + ACT LED
 
-The USB camera ships with the M1 (not here by the deadline), so the sensor task uses the 40-pin **GPIO** header — the simplest board-only option.
+The USB camera ships with the M1 (not here by the deadline) and I had **no discrete components on hand**
+(no LED/resistor/jumpers — board only). So the sensor task uses what the board itself provides:
 
-- **Wiring:** LED anode → ~330 Ω resistor → **physical pin 11**; LED cathode → **GND** (e.g. pin 6). *(Verify pin 11 against the RDK X5 40-pin pinout.)*
-- **Library:** `Hobot.GPIO` — D-Robotics' RPi.GPIO-compatible lib, preinstalled on RDKOS.
+- **Sensor (input):** the SoC's **DDR + CPU thermal sensors** (`/sys/class/thermal/thermal_zone{0,1}`),
+  read every tick in Python.
+- **Peripheral (output):** the onboard **ACT LED** (`/sys/class/leds/ACT`) — the GPIO-driven status LED.
+  The script takes it over from the kernel `heartbeat` trigger, blinks it at 1 Hz in sync with the
+  sensor reads, and restores the heartbeat on exit.
 
-`blink.py`:
-```python
-import Hobot.GPIO as GPIO, time
-GPIO.setwarnings(False)
-GPIO.setmode(GPIO.BOARD)              # physical pin numbering
-LED = 11
-GPIO.setup(LED, GPIO.OUT, initial=GPIO.LOW)
-try:
-    while True:
-        GPIO.output(LED, GPIO.HIGH); time.sleep(0.5)
-        GPIO.output(LED, GPIO.LOW);  time.sleep(0.5)
-except KeyboardInterrupt:
-    pass
-finally:
-    GPIO.cleanup()
+Script: [`scripts/challenge2_sensor.py`](scripts/challenge2_sensor.py) (also at `~/challenge2_sensor.py` on the board).
+
+```bash
+sudo python3 ~/challenge2_sensor.py        # 60 s run; password: sunrise
 ```
-Run: `sudo python3 blink.py` → LED blinks at ~1 Hz.
+Sample output (real run):
+```
+[  0.0s] ACT LED ON   |  thermal-ddr: 58.1C  thermal-cpu: 57.2C
+[  0.5s] ACT LED off  |  thermal-ddr: 57.8C  thermal-cpu: 56.8C
+...
+ACT LED restored to heartbeat trigger.
+```
 
-> **No LED handy?** Either jumper an output pin to an input pin and print the toggling value in software, or use the M1's USB camera once it arrives. Any of camera / IMU / GPIO / mic / motor satisfies Challenge 2.
+> **With parts (alternative):** classic external blink — LED anode → ~330 Ω → physical **pin 11**,
+> cathode → GND (pin 6), driven via `Hobot.GPIO` (RPi.GPIO-compatible, preinstalled). Saved for when
+> the M1 kit arrives; any of camera / IMU / GPIO / mic / motor satisfies Challenge 2.
 >
-> 📸 **Screenshot B:** the blinking LED (photo/short clip) or the GPIO toggle log.
+> 📸 **Screenshot B:** the ACT LED blinking under script control (short clip/photo) + the sensor log.
+> **Evidence:** [`docs/images/challenge2-act-led-blink.mp4`](docs/images/challenge2-act-led-blink.mp4) — 17 s clip of the ACT LED under script control with the live sensor log.
 
 ## 4. First AI task (Challenge 3) — YOLO on the BPU (static image)
 
 Runs on-device on a bundled test image — **no camera required**.
 
 ```bash
-# 1. Get the sample + model (on the board)
-git clone https://github.com/D-Robotics/rdk_model_zoo
-cd rdk_model_zoo/samples/vision/ultralytics_yolo
-bash model/download_model.sh                 # downloads the BPU .bin model(s)
+# 1. Get the samples (on the board)
+git clone --depth 1 https://github.com/D-Robotics/rdk_model_zoo
+cd rdk_model_zoo/samples/vision/ultralytics_yolo/runtime/python
 
-# 2. Run detection on a bundled test image (test_data/bus.jpg)
-cd runtime/python
-bash run.sh                                  # exact model/image args: see runtime/python/README.md
+# 2. Run detection — run.sh fetches the X5 BPU model itself, then infers
+#    on the bundled test image (datasets/coco/assets/bus.jpg)
+bash run.sh detect
 ```
-- **Model:** `<fill in — e.g. yolov8n .bin from download_model.sh>`
-- **Exact command I ran:** `<paste here>`
-- **Result:** annotated image with bounding boxes, produced on the board (BPU).
+- **Model:** `yolo11n_detect_bayese_640x640_nv12.bin` (YOLO11n, 640×640, NV12 — compiled for the X5's Bayes-e BPU)
+- **Exact command I ran:** `cd ~/rdk_model_zoo/samples/vision/ultralytics_yolo/runtime/python && bash run.sh detect`
+- **Result:** `bus: 0.93` + 4× `person` (0.89 / 0.84 / 0.80 / 0.50) on `bus.jpg`; annotated output saved to
+  `test_data/result_detect.jpg`. **Forward time: 13.1 ms on one BPU core (~76 FPS raw)** — load 149 ms,
+  pre-process 12.1 ms, post-process 10.0 ms. Great early signal for the Stage 2 person-follower budget.
 
 *Lighter alternative if YOLO setup is heavy:* `samples/vision/mobilenetv2` image classification on a test image.
 
 > 📸 **Screenshot C:** the annotated detection output, running on the board.
+
+![YOLO11n detection on the X5 BPU — bus 0.93, 4× person](docs/images/yolo11n-bus-result.jpg)
 
 ## Dependencies
 - `git`; D-Robotics **BPU runtime** + `Hobot.GPIO` (both preinstalled on RDKOS).
