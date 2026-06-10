@@ -90,7 +90,7 @@ ACT LED restored to heartbeat trigger.
 > the M1 kit arrives; any of camera / IMU / GPIO / mic / motor satisfies Challenge 2.
 >
 > 📸 **Screenshot B:** the ACT LED blinking under script control (short clip/photo) + the sensor log.
-> **Evidence:** [`docs/images/challenge2-act-led-blink.mp4`](docs/images/challenge2-act-led-blink.mp4) — 17 s clip of the ACT LED under script control with the live sensor log.
+> **Evidence:** [`docs/images/challenge2-act-led-blink.mp4`](docs/images/challenge2-act-led-blink.mp4) — short clip (1080×1920, H.264) of the ACT LED blinking under script control with the live sensor log on screen.
 
 ## 4. First AI task (Challenge 3) — YOLO on the BPU (static image)
 
