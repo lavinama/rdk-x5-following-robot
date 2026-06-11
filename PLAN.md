@@ -17,7 +17,7 @@ Detailed docs: Stage 1 working doc on branch `docs/stage1-scaffold`; Stage 2/3 d
 6. ✅ First AI (Challenge 3): YOLO11n on `bus.jpg` — BPU forward **13.1 ms (~76 FPS)**, bus 0.93 + 4 persons → **Screenshot C** (`~/Desktop/screenshot-C-yolo-result.jpg`)
 7. ✅ Discord Stage 1 check-in → [permalink](https://discord.com/channels/1300358874280230994/1511058147350151168/1514414310296649849)
 8. ✅ Fill the evidence into the Stage 1 doc; make the repo **public**
-9. 🔜 Open the competition `projects/` PR (fork as lavinama, branch `showcase/lavinama-stage1`)
+9. ✅ Competition `projects/` PR opened: [D-Robotics/Robotics-Dream-Keeper-Challenge#2](https://github.com/D-Robotics/Robotics-Dream-Keeper-Challenge/pull/2)
 
 → earns **RDK Explorer**
 
